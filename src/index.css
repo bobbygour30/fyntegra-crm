@@ -7,3 +7,31 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+
+
+/* Inputs */
+.input {
+  @apply w-full px-4 py-3 border rounded-lg
+    focus:outline-none focus:ring-2 focus:ring-red-500;
+}
+
+/* Buttons */
+.btn-primary {
+  @apply bg-red-600 text-white px-6 py-3 rounded-lg
+    hover:bg-red-700 transition disabled:opacity-50;
+}
+
+.btn-secondary {
+  @apply bg-white border px-4 py-2 rounded-lg
+    text-sm hover:bg-gray-50 transition;
+}
+
+/* Tables */
+table th {
+  @apply text-left text-sm font-medium text-gray-600 p-3;
+}
+
+table td {
+  @apply p-3 text-sm;
+}

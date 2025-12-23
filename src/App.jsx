@@ -1,15 +1,15 @@
 import { useState } from "react";
-import Login from "./components/Login";
-import Dashboard from "./components/Dashboard";
+import Login from "./components/auth/Login";
+import Dashboard from "./pages/Dashboard";
 
 export default function App() {
-  const [loggedIn, setLoggedIn] = useState(
-    localStorage.getItem("loggedIn") === "true"
+  const [auth, setAuth] = useState(
+    localStorage.getItem("auth") === "true"
   );
 
-  return loggedIn ? (
-    <Dashboard setLoggedIn={setLoggedIn} />
+  return auth ? (
+    <Dashboard />
   ) : (
-    <Login setLoggedIn={setLoggedIn} />
+    <Login setAuth={setAuth} />
   );
 }
