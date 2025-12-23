@@ -1,10 +1,7 @@
-import { useState, useEffect } from "react";
-import ImportExport from "./ImportExport";
+import { useEffect, useState } from "react";
+import api from "../../api/api";
 import AddUserForm from "./AddUserForm";
-import {
-  getUsers,
-  deleteUsersByIds,
-} from "../../utils/storage";
+import ImportExport from "./ImportExport";
 
 export default function ContactsTable({
   selectedUsers,
@@ -13,121 +10,80 @@ export default function ContactsTable({
 }) {
   const [users, setUsers] = useState([]);
 
+  const load = async () => {
+    const res = await api.get("/contacts");
+    setUsers(res.data);
+  };
+
   useEffect(() => {
-    setUsers(getUsers());
+    load();
   }, []);
 
-  const toggleUser = (user) => {
+  const toggle = (user) => {
     setSelectedUsers((prev) =>
-      prev.some((u) => u.id === user.id)
-        ? prev.filter((u) => u.id !== user.id)
+      prev.some((u) => u._id === user._id)
+        ? prev.filter((u) => u._id !== user._id)
         : [...prev, user]
     );
   };
 
-  const deleteSingle = (id) => {
-    if (!confirm("Delete this contact?")) return;
-    const updated = deleteUsersByIds([id]);
-    setUsers(updated);
+  const deleteSelected = async () => {
+    await api.post("/contacts/delete", {
+      ids: selectedUsers.map((u) => u._id),
+    });
     setSelectedUsers([]);
-  };
-
-  const deleteSelected = () => {
-    if (!selectedUsers.length) return;
-    if (!confirm(`Delete ${selectedUsers.length} contacts?`))
-      return;
-
-    const ids = selectedUsers.map((u) => u.id);
-    const updated = deleteUsersByIds(ids);
-    setUsers(updated);
-    setSelectedUsers([]);
+    load();
   };
 
   return (
     <div className="bg-white rounded-xl shadow p-6">
-      <h2 className="text-xl font-semibold mb-4">
-        Contacts
-      </h2>
+      <h2 className="text-xl font-semibold mb-4">Contacts</h2>
 
-      {/* Add User */}
-      <AddUserForm onAdded={() => setUsers(getUsers())} />
+      <AddUserForm onAdded={load} />
 
-      {/* Import / Export + Bulk Delete */}
-      <div className="flex flex-wrap gap-3 mb-4">
-        <ImportExport users={users} setUsers={setUsers} />
+      <ImportExport users={users} refresh={load} />
 
-        {selectedUsers.length > 0 && (
-          <button
-            onClick={deleteSelected}
-            className="btn-secondary text-red-600 border-red-200"
-          >
-            Delete Selected ({selectedUsers.length})
-          </button>
-        )}
-      </div>
+      {selectedUsers.length > 0 && (
+        <button
+          onClick={deleteSelected}
+          className="btn-secondary text-red-600 mt-3"
+        >
+          Delete Selected ({selectedUsers.length})
+        </button>
+      )}
 
-      {/* Table */}
-      <div className="overflow-x-auto">
-        <table className="w-full border">
-          <thead className="bg-gray-100">
-            <tr>
-              <th />
-              <th>Name</th>
-              <th>Phone</th>
-              <th>Email</th>
-              <th>Company</th>
-              <th />
+      <table className="w-full border mt-4">
+        <thead className="bg-gray-100">
+          <tr>
+            <th />
+            <th>Name</th>
+            <th>Phone</th>
+            <th>Company</th>
+          </tr>
+        </thead>
+        <tbody>
+          {users.map((u) => (
+            <tr key={u._id} className="border-t">
+              <td>
+                <input
+                  type="checkbox"
+                  onChange={() => toggle(u)}
+                />
+              </td>
+              <td>{u.name}</td>
+              <td>{u.phone}</td>
+              <td>{u.company}</td>
             </tr>
-          </thead>
+          ))}
+        </tbody>
+      </table>
 
-          <tbody>
-            {users.map((u) => (
-              <tr key={u.id} className="border-t">
-                <td>
-                  <input
-                    type="checkbox"
-                    checked={selectedUsers.some(
-                      (su) => su.id === u.id
-                    )}
-                    onChange={() => toggleUser(u)}
-                  />
-                </td>
-                <td>{u.name}</td>
-                <td>{u.phone}</td>
-                <td>{u.email}</td>
-                <td>{u.company}</td>
-                <td>
-                  <button
-                    onClick={() => deleteSingle(u.id)}
-                    className="text-xs text-red-600 hover:underline"
-                  >
-                    Delete
-                  </button>
-                </td>
-              </tr>
-            ))}
-
-            {!users.length && (
-              <tr>
-                <td
-                  colSpan="6"
-                  className="text-center py-6 text-gray-400"
-                >
-                  No contacts found
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
-
-      {/* Continue */}
       <button
         disabled={!selectedUsers.length}
         onClick={onNext}
         className="btn-primary mt-6"
       >
-        Continue ({selectedUsers.length} Selected)
+        Continue
       </button>
     </div>
   );

@@ -4,7 +4,7 @@ import Dashboard from "./pages/Dashboard";
 
 export default function App() {
   const [auth, setAuth] = useState(
-    localStorage.getItem("auth") === "true"
+    Boolean(localStorage.getItem("token"))
   );
 
   return auth ? (

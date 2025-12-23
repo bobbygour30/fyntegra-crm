@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { addUser } from "../../utils/storage";
+import api from "../../api/api";
 
 export default function AddUserForm({ onAdded }) {
   const [form, setForm] = useState({
@@ -9,62 +9,31 @@ export default function AddUserForm({ onAdded }) {
     company: "",
   });
 
-  const submit = () => {
-    if (!form.name || !form.phone) return;
-
-    addUser({
-      id: crypto.randomUUID(),
-      ...form,
-    });
-
-    onAdded();
+  const submit = async () => {
+    await api.post("/contacts", form);
     setForm({ name: "", phone: "", email: "", company: "" });
+    onAdded();
   };
 
   return (
-    <div className="bg-gray-50 border rounded-xl p-4 mb-4">
-      <h3 className="text-sm font-semibold mb-3">
-        Add New Contact
-      </h3>
-
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
-        <input
-          className="input"
-          placeholder="Name"
-          value={form.name}
-          onChange={(e) =>
-            setForm({ ...form, name: e.target.value })
-          }
-        />
-        <input
-          className="input"
-          placeholder="Phone"
-          value={form.phone}
-          onChange={(e) =>
-            setForm({ ...form, phone: e.target.value })
-          }
-        />
-        <input
-          className="input"
-          placeholder="Email"
-          value={form.email}
-          onChange={(e) =>
-            setForm({ ...form, email: e.target.value })
-          }
-        />
-        <input
-          className="input"
-          placeholder="Company"
-          value={form.company}
-          onChange={(e) =>
-            setForm({ ...form, company: e.target.value })
-          }
-        />
+    <div className="bg-gray-50 p-4 rounded mb-4">
+      <div className="grid md:grid-cols-4 gap-3">
+        {Object.keys(form).map((k) => (
+          <input
+            key={k}
+            className="input"
+            placeholder={k}
+            value={form[k]}
+            onChange={(e) =>
+              setForm({ ...form, [k]: e.target.value })
+            }
+          />
+        ))}
       </div>
 
       <button
         onClick={submit}
-        className="btn-primary mt-4"
+        className="btn-primary mt-3"
       >
         Add Contact
       </button>
