@@ -1,37 +1,41 @@
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap");
 @import "tailwindcss";
 
-body {
-  margin: 0;
-  font-family: 'Outfit', sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+/* ================= BASE ================= */
+@layer base {
+  body {
+    margin: 0;
+    font-family: "Outfit", sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
 }
 
+/* ================= COMPONENTS ================= */
+@layer components {
+  .input {
+    @apply w-full px-4 py-3 border rounded-lg
+      focus:outline-none focus:ring-2 focus:ring-red-500;
+  }
 
+  .btn-primary {
+    @apply bg-red-600 text-white px-6 py-3 rounded-lg
+      hover:bg-red-700 transition disabled:opacity-50;
+  }
 
-/* Inputs */
-.input {
-  @apply w-full px-4 py-3 border rounded-lg
-    focus:outline-none focus:ring-2 focus:ring-red-500;
+  .btn-secondary {
+    @apply bg-white border px-4 py-2 rounded-lg
+      text-sm hover:bg-gray-50 transition;
+  }
 }
 
-/* Buttons */
-.btn-primary {
-  @apply bg-red-600 text-white px-6 py-3 rounded-lg
-    hover:bg-red-700 transition disabled:opacity-50;
-}
+/* ================= UTILITIES ================= */
+@layer utilities {
+  table th {
+    @apply text-left text-sm font-medium text-gray-600 p-3;
+  }
 
-.btn-secondary {
-  @apply bg-white border px-4 py-2 rounded-lg
-    text-sm hover:bg-gray-50 transition;
-}
-
-/* Tables */
-table th {
-  @apply text-left text-sm font-medium text-gray-600 p-3;
-}
-
-table td {
-  @apply p-3 text-sm;
+  table td {
+    @apply p-3 text-sm;
+  }
 }
