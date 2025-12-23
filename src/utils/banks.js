@@ -21,7 +21,7 @@ export const BANKS = [
       "Dear {{name}}, ICICI loan processing is complete.\nTrack: {{link}}",
   },
   {
-    id: "axis",
+    id: "axi",
     name: "Axis Bank",
     link: "https://axisbank.com/loan",
     template:
