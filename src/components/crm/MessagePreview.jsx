@@ -3,12 +3,11 @@ import api from "../../api/api";
 export default function MessagePreview({ users, bank }) {
   const send = async () => {
     await api.post("/campaigns/send", {
-      bank: bank.name,
       message: bank.template,
       recipients: users.map((u) => u.phone),
     });
 
-    alert("Messages sent successfully");
+    alert("Message request sent. Delivery depends on operator & DND.");
   };
 
   return (
