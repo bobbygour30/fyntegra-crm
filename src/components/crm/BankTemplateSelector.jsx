@@ -4,9 +4,10 @@ import api from "../../api/api";
 export default function BankTemplateSelector({ onSelect }) {
   const [banks, setBanks] = useState([]);
 
-  useEffect(() => {
-    api.get("/banks").then((res) => setBanks(res.data));
-  }, []);
+ // In BankTemplateSelector.jsx – replace hardcoded fetch with api
+useEffect(() => {
+  api.get("/banks").then((res) => setBanks(res.data));
+}, []);
 
   return (
     <div className="grid md:grid-cols-3 gap-4">
